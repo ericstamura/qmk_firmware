@@ -595,16 +595,16 @@ void bat_num_led(uint8_t bat_percent)
     }
 
     // set percent
-    if (bat_percent >= 1) rgb_matrix_set_color(29, r, g, b);
-    if (bat_percent > 10) rgb_matrix_set_color(28, r, g, b);
-    if (bat_percent > 20) rgb_matrix_set_color(27, r, g, b);
-    if (bat_percent > 30) rgb_matrix_set_color(26, r, g, b);
-    if (bat_percent > 40) rgb_matrix_set_color(25, r, g, b);
-    if (bat_percent > 50) rgb_matrix_set_color(24, r, g, b);
-    if (bat_percent > 60) rgb_matrix_set_color(23, r, g, b);
-    if (bat_percent > 70) rgb_matrix_set_color(22, r, g, b);
-    if (bat_percent > 80) rgb_matrix_set_color(21, r, g, b);
-    if (bat_percent > 90) rgb_matrix_set_color(20, r, g, b);
+    if (bat_percent >= 1) rgb_matrix_set_color(1, r, g, b);
+    if (bat_percent > 10) rgb_matrix_set_color(2, r, g, b);
+    if (bat_percent > 20) rgb_matrix_set_color(3, r, g, b);
+    if (bat_percent > 30) rgb_matrix_set_color(4, r, g, b);
+    if (bat_percent > 40) rgb_matrix_set_color(5, r, g, b);
+    if (bat_percent > 50) rgb_matrix_set_color(6, r, g, b);
+    if (bat_percent > 60) rgb_matrix_set_color(7, r, g, b);
+    if (bat_percent > 70) rgb_matrix_set_color(8, r, g, b);
+    if (bat_percent > 80) rgb_matrix_set_color(9, r, g, b);
+    if (bat_percent > 90) rgb_matrix_set_color(10, r, g, b);
 }
 
 void num_led_show(void)
