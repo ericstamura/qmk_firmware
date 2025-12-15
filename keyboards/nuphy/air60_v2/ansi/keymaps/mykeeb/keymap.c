@@ -26,9 +26,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
+// External variable from ansi.c to detect battery number display
+extern bool f_bat_num_show;
+
 // Tap Dance timing configuration (in milliseconds)
 #define TAP_DANCE_TERM 25
 #define TAP_DANCE_TERM_ESC 50
+
+// Color temperature shift configuration
+#define HUE_SHIFT_WARM 30       // Hue shift amount for warm effect (in HSV units)
+#define DIM_PERCENT 30          // Dim transparent keys to this percentage
 
 // Tap Dance declarations
 enum {
@@ -105,15 +112,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // layer 1 (MAC FN)
 [1]=LAYOUT(
-    KC_ESC        , KC_F1           , KC_F2          , KC_F3          , KC_F4          , KC_F5          , KC_F6          , KC_F7          , KC_F8          , KC_F9          , KC_F10         , KC_F11           , KC_F12         , KC_BSPC         ,
+    KC_ESC        , KC_F1           , KC_F2          , KC_F3          , KC_F4          , KC_F5          , KC_F6          , KC_F7          , KC_F8          , KC_F9          , KC_F10         , KC_F11           , KC_F12         , _______         ,
     _______       , _______         , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , KC_PSCR        , _______          , _______        , _______         ,
     _______       , _______         , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______                           , _______         ,
-    KC_LSFT       , RGB_M_P         , RGB_MOD        , _______        , _______        , BAT_SHOW       , _______        , _______        , RGB_SPD        , RGB_SPI        , _______        , RGB_SAD          , RGB_VAI        , RGB_SAI         ,
-    KC_LCTL       , _______         , _______        , _______                                                                                             , _______        , MO(2)          , RGB_HUD          , RGB_VAD        , RGB_HUI)        ,
+    _______       , RGB_M_P         , RGB_MOD        , _______        , _______        , BAT_SHOW       , _______        , _______        , RGB_SPD        , RGB_SPI        , _______        , RGB_SAD          , RGB_VAI        , RGB_SAI         ,
+    _______       , _______         , _______        , _______                                                                                             , _______        , MO(2)          , RGB_HUD          , RGB_VAD        , RGB_HUI)        ,
 
 // layer 2 (MAC FN + FN2)
 [2]=LAYOUT(
-    KC_ESC         , KC_BRID        , KC_BRIU        , MAC_TASK       , MAC_SEARCH     , MAC_VOICE      , MAC_DND        , KC_MPRV        , KC_MPLY        , KC_MNXT        , KC_MUTE        , KC_VOLD          , KC_VOLU        , _______         ,
+    _______        , KC_BRID        , KC_BRIU        , MAC_TASK       , MAC_SEARCH     , MAC_VOICE      , MAC_DND        , KC_MPRV        , KC_MPLY        , KC_MNXT        , KC_MUTE        , KC_VOLD          , KC_VOLU        , _______         ,
     _______        , LNK_BLE1       , LNK_BLE2       , LNK_BLE3       , LNK_RF         , RGB_TOG        , _______        , _______        , _______        , _______        , _______        , DEV_RESET        , KC_RBRC        , _______         ,
     _______        , _______        , SLEEP_MODE     , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______                           , _______         ,
     _______        , _______        , SIDE_MOD       , _______        , _______        , BAT_NUM        , _______        , _______        , SIDE_SPD       , SIDE_SPI       , _______        , _______          , SIDE_VAI       , _______         ,
@@ -129,36 +136,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // layer 4 (WIN FN)
 [4]=LAYOUT(
-    KC_ESC        , KC_F1           , KC_F2          , KC_F3          , KC_F4          , KC_F5          , KC_F6          , KC_F7          , KC_F8          , KC_F9          , KC_F10         , KC_F11           , KC_F12        , KC_BSPC          ,
+    KC_ESC        , KC_F1           , KC_F2          , KC_F3          , KC_F4          , KC_F5          , KC_F6          , KC_F7          , KC_F8          , KC_F9          , KC_F10         , KC_F11           , KC_F12        , _______          ,
     _______       , _______         , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , KC_PSCR        , _______          , _______       , _______          ,
     _______       , _______         , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______                          , _______          ,
-    KC_LSFT       , RGB_M_P         , RGB_MOD        , _______        , _______        , BAT_SHOW       , _______        , _______        , RGB_SPD        , RGB_SPI        , _______        , RGB_SAD          , RGB_VAI       , RGB_SAI          ,
-    KC_LCTL       , _______         , _______        , _______                                                                                             , _______        , MO(5)          , RGB_HUD          , RGB_VAD       , RGB_HUI)         ,
+    _______       , RGB_M_P         , RGB_MOD        , _______        , _______        , BAT_SHOW       , _______        , _______        , RGB_SPD        , RGB_SPI        , _______        , RGB_SAD          , RGB_VAI       , RGB_SAI          ,
+    _______       , _______         , _______        , _______                                                                                             , _______        , MO(5)          , RGB_HUD          , RGB_VAD       , RGB_HUI)         ,
 
 // layer 5 (WIN FN + FN2)
 
 [5]=LAYOUT(
-    KC_ESC         , KC_BRID        , KC_BRIU        , LGUI(KC_TAB)   , LGUI(KC_E)     , _______        , _______        , KC_MPRV        , KC_MPLY        , KC_MNXT        , KC_MUTE        , KC_VOLD          , KC_VOLU       , _______          ,
+    _______        , KC_BRID        , KC_BRIU        , LGUI(KC_TAB)   , LGUI(KC_E)     , _______        , _______        , KC_MPRV        , KC_MPLY        , KC_MNXT        , KC_MUTE        , KC_VOLD          , KC_VOLU       , _______          ,
     _______        , LNK_BLE1       , LNK_BLE2       , LNK_BLE3       , LNK_RF         , RGB_TOG        , _______        , _______        , _______        , _______        , _______        , DEV_RESET        , _______       , _______          ,
     _______        , _______        , SLEEP_MODE     , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______                          , _______          ,
     _______        , _______        , SIDE_MOD       , _______        , _______        , BAT_NUM        , _______        , _______        , SIDE_SPD       , SIDE_SPI       , _______        , _______          , SIDE_VAI      , _______          ,
     _______        , _______        , _______        , _______                                                                                             , _______        , _______        , _______          , SIDE_VAD      , SIDE_HUI)        ,
-
-// layer 6 (UNUSED)./
-[6]=LAYOUT(
-    _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______          , _______       , _______          ,
-    _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______          , _______       , _______          ,
-    _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______                          , _______          ,
-    _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______          , _______       , _______          ,
-    _______        , _______        , _______        , _______                                                                                             , _______        , _______        , _______          , _______       , _______)         ,
-
-// layer 7 (UNUSED)
-[7]=LAYOUT(
-    _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______          , _______       , _______          ,
-    _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______          , _______       , _______          ,
-    _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______                          , _______          ,
-    _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______          , _______       , _______          ,
-    _______        , _______        , _______        , _______                                                                                             , _______        , _______        , _______          , _______       , _______)
 };
 
 const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
@@ -237,3 +228,53 @@ const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
     {1, A_9,    B_9,    C_9},       //
     {1, A_10,   B_10,   C_10}       //
 };
+
+// LED index to matrix position mapping (row, col) - based on keyboard.json rgb_matrix layout
+const uint8_t led_to_matrix[64][2] = {
+    {0,0},   {1,1},   {1,2},   {1,3},   {1,4},   {1,5},   {1,6},   {1,7},   {1,8},   {1,9},   {1,10},  {1,11},  {1,12},  {1,13},  // Row 0-1: Esc, 1-0, -, =, Backsp
+    {2,0},   {2,1},   {2,2},   {2,3},   {2,4},   {2,5},   {2,6},   {2,7},   {2,8},   {2,9},   {2,10},  {2,11},  {2,12},  {2,13},  // Row 2: Tab to Backslash
+    {3,0},   {3,1},   {3,2},   {3,3},   {3,4},   {3,5},   {3,6},   {3,7},   {3,8},   {3,9},   {3,10},  {3,11},           {3,13},  // Row 3: Caps to Enter
+    {4,0},   {4,2},   {4,3},   {4,4},   {4,5},   {4,6},   {4,7},   {4,8},   {4,9},   {4,10},  {4,11},  {4,13},  {4,15},  {2,14},  // Row 4: Shift to Del
+    {5,0},   {5,1},   {5,2},   {5,6},                                                 {5,9},   {5,10},  {5,14},  {5,15},  {5,16}   // Row 5: Ctrl to Right
+};
+
+// Custom RGB lighting for layers with warm temperature shift
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    // Don't override colors when battery display is active
+    if (f_bat_num_show) {
+        return false;
+    }
+
+    uint8_t layer = get_highest_layer(layer_state);
+
+    // For base layers (0 = MAC, 3 = WIN), use normal RGB settings
+    if (layer == 0 || layer == 3) {
+        return false;
+    }
+
+    // For function layers (1, 2, 4, 5), apply color temperature shift to mapped keys
+    // Get current RGB matrix HSV settings
+    HSV hsv = rgb_matrix_get_hsv();
+
+    // Iterate through physical key LEDs only (0-63, excluding logo LEDs 64-73)
+    for (uint8_t i = 0; i < 64; i++) {
+        uint8_t row = led_to_matrix[i][0];
+        uint8_t col = led_to_matrix[i][1];
+        uint16_t keycode = keymap_key_to_keycode(layer, (keypos_t){col, row});
+
+        // For transparent keys, don't modify (let normal RGB effect show)
+        if (keycode == KC_TRNS || keycode == KC_NO) {
+            continue;
+        }
+
+        // For mapped keys: apply warm temperature shift
+        HSV temp_hsv = hsv;
+        temp_hsv.h = hsv.h + HUE_SHIFT_WARM;
+
+        // Convert HSV to RGB and set the LED color
+        RGB rgb = hsv_to_rgb(temp_hsv);
+        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+    }
+
+    return false;
+}
