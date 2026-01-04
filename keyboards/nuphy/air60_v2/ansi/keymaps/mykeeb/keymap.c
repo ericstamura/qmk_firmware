@@ -33,9 +33,8 @@ extern bool f_bat_num_show;
 #define TAP_DANCE_TERM 25
 #define TAP_DANCE_TERM_ESC 50
 
-// Color temperature shift configuration
-#define HUE_SHIFT_WARM 30       // Hue shift amount for warm effect (in HSV units)
-#define DIM_PERCENT 30          // Dim transparent keys to this percentage
+// Complementary color configuration
+#define HUE_COMPLEMENTARY 128   // Hue shift for complementary colors (180 degrees in HSV = 128 units)
 
 // Tap Dance declarations
 enum {
@@ -252,7 +251,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         return false;
     }
 
-    // For function layers (1, 2, 4, 5), apply color temperature shift to mapped keys
+    // For function layers (1, 2, 4, 5), apply complementary color to mapped keys
     // Get current RGB matrix HSV settings
     HSV hsv = rgb_matrix_get_hsv();
 
@@ -267,9 +266,9 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
             continue;
         }
 
-        // For mapped keys: apply warm temperature shift
+        // For mapped keys: apply complementary color (opposite on color wheel)
         HSV temp_hsv = hsv;
-        temp_hsv.h = hsv.h + HUE_SHIFT_WARM;
+        temp_hsv.h = hsv.h + HUE_COMPLEMENTARY;
 
         // Convert HSV to RGB and set the LED color
         RGB rgb = hsv_to_rgb(temp_hsv);
