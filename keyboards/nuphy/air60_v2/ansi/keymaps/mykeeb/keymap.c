@@ -29,75 +29,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // External variable from ansi.c to detect battery number display
 extern bool f_bat_num_show;
 
-// Tap Dance timing configuration (in milliseconds)
-#define TAP_DANCE_TERM 25
-#define TAP_DANCE_TERM_ESC 50
-
 // Complementary color configuration
 #define HUE_COMPLEMENTARY 128   // Hue shift for complementary colors (180 degrees in HSV = 128 units)
-
-// Tap Dance declarations
-enum {
-    TD_ESC_GRV,
-    TD_1_F1,
-    TD_2_F2,
-    TD_3_F3,
-    TD_4_F4,
-    TD_5_F5,
-    TD_6_F6,
-    TD_7_F7,
-    TD_8_F8,
-    TD_9_F9,
-    TD_0_F10,
-    TD_MINS_F11,
-    TD_EQL_F12,
-    TD_HOME_PGUP,
-    TD_END_PGDN,
-};
-
-// Tap Dance definitions
-tap_dance_action_t tap_dance_actions[] = {
-    [TD_ESC_GRV] = ACTION_TAP_DANCE_DOUBLE(KC_GRV, KC_ESC),  // Changed: single tap = `, double tap = ESC
-    [TD_1_F1] = ACTION_TAP_DANCE_DOUBLE(KC_1, KC_F1),
-    [TD_2_F2] = ACTION_TAP_DANCE_DOUBLE(KC_2, KC_F2),
-    [TD_3_F3] = ACTION_TAP_DANCE_DOUBLE(KC_3, KC_F3),
-    [TD_4_F4] = ACTION_TAP_DANCE_DOUBLE(KC_4, KC_F4),
-    [TD_5_F5] = ACTION_TAP_DANCE_DOUBLE(KC_5, KC_F5),
-    [TD_6_F6] = ACTION_TAP_DANCE_DOUBLE(KC_6, KC_F6),
-    [TD_7_F7] = ACTION_TAP_DANCE_DOUBLE(KC_7, KC_F7),
-    [TD_8_F8] = ACTION_TAP_DANCE_DOUBLE(KC_8, KC_F8),
-    [TD_9_F9] = ACTION_TAP_DANCE_DOUBLE(KC_9, KC_F9),
-    [TD_0_F10] = ACTION_TAP_DANCE_DOUBLE(KC_0, KC_F10),
-    [TD_MINS_F11] = ACTION_TAP_DANCE_DOUBLE(KC_MINS, KC_F11),
-    [TD_EQL_F12] = ACTION_TAP_DANCE_DOUBLE(KC_EQL, KC_F12),
-    [TD_HOME_PGUP] = ACTION_TAP_DANCE_DOUBLE(KC_HOME, KC_PGUP),
-    [TD_END_PGDN] = ACTION_TAP_DANCE_DOUBLE(KC_END, KC_PGDN),
-};
-
-// Override the default tap term for tap dance
-uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case TD(TD_ESC_GRV):
-            return TAP_DANCE_TERM_ESC;
-        case TD(TD_1_F1):
-        case TD(TD_2_F2):
-        case TD(TD_3_F3):
-        case TD(TD_4_F4):
-        case TD(TD_5_F5):
-        case TD(TD_6_F6):
-        case TD(TD_7_F7):
-        case TD(TD_8_F8):
-        case TD(TD_9_F9):
-        case TD(TD_0_F10):
-        case TD(TD_MINS_F11):
-        case TD(TD_EQL_F12):
-        case TD(TD_HOME_PGUP):
-        case TD(TD_END_PGDN):
-            return TAP_DANCE_TERM;
-        default:
-            return TAPPING_TERM;
-    }
-}
+#define HUE_LAYER_OFFSET 64     // Alternative hue shift for layer keys (90 degrees in HSV = 64 units)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -105,8 +39,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [0] = LAYOUT(
     KC_GRV        , KC_1            , KC_2           , KC_3           , KC_4           , KC_5           , KC_6           , KC_7           , KC_8           , KC_9           , KC_0           , KC_MINS          , KC_EQL         , KC_BSPC         ,
     KC_TAB        , KC_Q            , KC_W           , KC_E           , KC_R           , KC_T           , KC_Y           , KC_U           , KC_I           , KC_O           , KC_P           , KC_LBRC          , KC_RBRC        , KC_BSLS         ,
-    LT(1, KC_CAPS), KC_A            , KC_S           , KC_D           , KC_F           , KC_G           , KC_H           , KC_J           , KC_K           , KC_L           , KC_SCLN        , KC_QUOT                           , KC_ENT          ,
-    KC_LSFT       , KC_Z            , KC_X           , KC_C           , KC_V           , KC_B           , KC_N           , KC_M           , KC_COMM        , KC_DOT         , KC_SLSH        , TD(TD_HOME_PGUP) , KC_UP          , TD(TD_END_PGDN) ,
+    MO(2)         , KC_A            , KC_S           , KC_D           , KC_F           , KC_G           , KC_H           , KC_J           , KC_K           , KC_L           , KC_SCLN        , KC_QUOT                           , KC_ENT          ,
+    KC_LSFT       , KC_Z            , KC_X           , KC_C           , KC_V           , KC_B           , KC_N           , KC_M           , KC_COMM        , KC_DOT         , KC_SLSH        , KC_HOME          , KC_UP          , KC_END          ,
     KC_LCTL       , KC_LALT         , KC_LGUI        , KC_SPC                                                                                              , MO(1)          , KC_DEL         , KC_LEFT          , KC_DOWN        , KC_RGHT)        ,
 
 // layer 1 (MAC FN)
@@ -114,23 +48,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESC        , KC_F1           , KC_F2          , KC_F3          , KC_F4          , KC_F5          , KC_F6          , KC_F7          , KC_F8          , KC_F9          , KC_F10         , KC_F11           , KC_F12         , _______         ,
     _______       , _______         , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , KC_PSCR        , _______          , _______        , _______         ,
     _______       , _______         , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______                           , _______         ,
-    _______       , RGB_M_P         , RGB_MOD        , _______        , _______        , BAT_SHOW       , _______        , _______        , RGB_SPD        , RGB_SPI        , _______        , RGB_SAD          , RGB_VAI        , RGB_SAI         ,
+    _______       , RGB_M_P         , RGB_MOD        , _______        , _______        , BAT_SHOW       , _______        , _______        , RGB_SPD        , RGB_SPI        , _______        , KC_PGUP          , RGB_VAI        , KC_PGDN         ,
     _______       , _______         , _______        , _______                                                                                             , _______        , MO(2)          , RGB_HUD          , RGB_VAD        , RGB_HUI)        ,
 
 // layer 2 (MAC FN + FN2)
 [2]=LAYOUT(
-    _______        , KC_BRID        , KC_BRIU        , MAC_TASK       , MAC_SEARCH     , MAC_VOICE      , MAC_DND        , KC_MPRV        , KC_MPLY        , KC_MNXT        , KC_MUTE        , KC_VOLD          , KC_VOLU        , _______         ,
+    KC_ESC         , KC_BRID        , KC_BRIU        , MAC_TASK       , MAC_SEARCH     , MAC_VOICE      , MAC_DND        , KC_MPRV        , KC_MPLY        , KC_MNXT        , KC_MUTE        , KC_VOLD          , KC_VOLU        , _______         ,
     _______        , LNK_BLE1       , LNK_BLE2       , LNK_BLE3       , LNK_RF         , RGB_TOG        , _______        , _______        , _______        , _______        , _______        , DEV_RESET        , KC_RBRC        , _______         ,
-    _______        , _______        , SLEEP_MODE     , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______                           , _______         ,
-    _______        , _______        , SIDE_MOD       , _______        , _______        , BAT_NUM        , _______        , _______        , SIDE_SPD       , SIDE_SPI       , _______        , _______          , SIDE_VAI       , _______         ,
+    KC_CAPS        , _______        , SLEEP_MODE     , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______                           , _______         ,
+    _______        , _______        , SIDE_MOD       , _______        , _______        , BAT_NUM        , _______        , _______        , SIDE_SPD       , SIDE_SPI       , _______        , RGB_SAD          , SIDE_VAI       , RGB_SAI          ,
     _______        , _______        , _______        , _______                                                                                             , _______        , _______        , _______          , SIDE_VAD       , SIDE_HUI)       ,
 
 // layer 3 (WIN)
 [3]=LAYOUT(
     KC_GRV        , KC_1            , KC_2           , KC_3           , KC_4           , KC_5           , KC_6           , KC_7           , KC_8           , KC_9           , KC_0           , KC_MINS          , KC_EQL         , KC_BSPC         ,
     KC_TAB        , KC_Q            , KC_W           , KC_E           , KC_R           , KC_T           , KC_Y           , KC_U           , KC_I           , KC_O           , KC_P           , KC_LBRC          , KC_RBRC        , KC_BSLS         ,
-    LT(4, KC_CAPS), KC_A            , KC_S           , KC_D           , KC_F           , KC_G           , KC_H           , KC_J           , KC_K           , KC_L           , KC_SCLN        , KC_QUOT                           , KC_ENT          ,
-    KC_LSFT       , KC_Z            , KC_X           , KC_C           , KC_V           , KC_B           , KC_N           , KC_M           , KC_COMM        , KC_DOT         , KC_SLSH        , TD(TD_HOME_PGUP) , KC_UP          , TD(TD_END_PGDN) ,
+    MO(5)         , KC_A            , KC_S           , KC_D           , KC_F           , KC_G           , KC_H           , KC_J           , KC_K           , KC_L           , KC_SCLN        , KC_QUOT                           , KC_ENT          ,
+    KC_LSFT       , KC_Z            , KC_X           , KC_C           , KC_V           , KC_B           , KC_N           , KC_M           , KC_COMM        , KC_DOT         , KC_SLSH        , KC_HOME          , KC_UP          , KC_END          ,
     KC_LCTL       , KC_LGUI         , KC_LALT        , KC_SPC                                                                                              , MO(4)          , KC_DEL         , KC_LEFT          , KC_DOWN        , KC_RGHT)        ,
 
 // layer 4 (WIN FN)
@@ -138,16 +72,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESC        , KC_F1           , KC_F2          , KC_F3          , KC_F4          , KC_F5          , KC_F6          , KC_F7          , KC_F8          , KC_F9          , KC_F10         , KC_F11           , KC_F12        , _______          ,
     _______       , _______         , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , KC_PSCR        , _______          , _______       , _______          ,
     _______       , _______         , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______                          , _______          ,
-    _______       , RGB_M_P         , RGB_MOD        , _______        , _______        , BAT_SHOW       , _______        , _______        , RGB_SPD        , RGB_SPI        , _______        , RGB_SAD          , RGB_VAI       , RGB_SAI          ,
+    _______       , RGB_M_P         , RGB_MOD        , _______        , _______        , BAT_SHOW       , _______        , _______        , RGB_SPD        , RGB_SPI        , _______        , KC_PGUP          , RGB_VAI       , KC_PGDN          ,
     _______       , _______         , _______        , _______                                                                                             , _______        , MO(5)          , RGB_HUD          , RGB_VAD       , RGB_HUI)         ,
 
 // layer 5 (WIN FN + FN2)
 
 [5]=LAYOUT(
-    _______        , KC_BRID        , KC_BRIU        , LGUI(KC_TAB)   , LGUI(KC_E)     , _______        , _______        , KC_MPRV        , KC_MPLY        , KC_MNXT        , KC_MUTE        , KC_VOLD          , KC_VOLU       , _______          ,
+    KC_ESC         , KC_BRID        , KC_BRIU        , LGUI(KC_TAB)   , LGUI(KC_E)     , _______        , _______        , KC_MPRV        , KC_MPLY        , KC_MNXT        , KC_MUTE        , KC_VOLD          , KC_VOLU       , _______          ,
     _______        , LNK_BLE1       , LNK_BLE2       , LNK_BLE3       , LNK_RF         , RGB_TOG        , _______        , _______        , _______        , _______        , _______        , DEV_RESET        , _______       , _______          ,
-    _______        , _______        , SLEEP_MODE     , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______                          , _______          ,
-    _______        , _______        , SIDE_MOD       , _______        , _______        , BAT_NUM        , _______        , _______        , SIDE_SPD       , SIDE_SPI       , _______        , _______          , SIDE_VAI      , _______          ,
+    KC_CAPS        , _______        , SLEEP_MODE     , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______        , _______                          , _______          ,
+    _______        , _______        , SIDE_MOD       , _______        , _______        , BAT_NUM        , _______        , _______        , SIDE_SPD       , SIDE_SPI       , _______        , RGB_SAD          , SIDE_VAI      , RGB_SAI          ,
     _______        , _______        , _______        , _______                                                                                             , _______        , _______        , _______          , SIDE_VAD      , SIDE_HUI)        ,
 };
 
@@ -237,6 +171,15 @@ const uint8_t led_to_matrix[64][2] = {
     {5,0},   {5,1},   {5,2},   {5,6},                                                 {5,9},   {5,10},  {5,14},  {5,15},  {5,16}   // Row 5: Ctrl to Right
 };
 
+// Helper function to check if keycode is a layer key
+static bool is_layer_key(uint16_t keycode) {
+    return (keycode >= MO(0) && keycode <= MO(9)) ||      // Momentary layers
+           (keycode >= LT(0, KC_A) && keycode <= LT(9, KC_Z)) ||  // Layer Tap
+           keycode == TG(0) || keycode == TG(1) ||         // Toggle layers
+           keycode == TG(2) || keycode == TG(3) ||
+           keycode == TG(4) || keycode == TG(5);
+}
+
 // Custom RGB lighting for layers with warm temperature shift
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     // Don't override colors when battery display is active
@@ -246,12 +189,6 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
     uint8_t layer = get_highest_layer(layer_state);
 
-    // For base layers (0 = MAC, 3 = WIN), use normal RGB settings
-    if (layer == 0 || layer == 3) {
-        return false;
-    }
-
-    // For function layers (1, 2, 4, 5), apply complementary color to mapped keys
     // Get current RGB matrix HSV settings
     HSV hsv = rgb_matrix_get_hsv();
 
@@ -261,12 +198,26 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         uint8_t col = led_to_matrix[i][1];
         uint16_t keycode = keymap_key_to_keycode(layer, (keypos_t){col, row});
 
-        // For transparent keys, don't modify (let normal RGB effect show)
+        // Highlight layer keys with alternative complementary color (90 degree shift)
+        if (is_layer_key(keycode)) {
+            HSV layer_hsv = hsv;
+            layer_hsv.h = hsv.h + HUE_LAYER_OFFSET;  // 90 degree shift instead of 180
+            RGB rgb = hsv_to_rgb(layer_hsv);
+            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+            continue;
+        }
+
+        // For base layers (0 = MAC, 3 = WIN), don't modify other keys
+        if (layer == 0 || layer == 3) {
+            continue;
+        }
+
+        // For transparent keys on function layers, don't modify (let normal RGB effect show)
         if (keycode == KC_TRNS || keycode == KC_NO) {
             continue;
         }
 
-        // For mapped keys: apply complementary color (opposite on color wheel)
+        // For mapped keys on function layers: apply standard complementary color (180 degree shift)
         HSV temp_hsv = hsv;
         temp_hsv.h = hsv.h + HUE_COMPLEMENTARY;
 
